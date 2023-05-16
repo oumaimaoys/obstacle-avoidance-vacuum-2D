@@ -1,38 +1,36 @@
+
 from random import *
 
 
 class Environnement:
     def __init__(self, size, ini_pos):
-        self.size = size  # tuple
+        self.size = size  # tuple (length, width)
         self.initial_pos = ini_pos
         self.agent_current_position = ini_pos  # tuple
-        self.goal_position = (0, 0)  # tuple
-        self.obtacle_ratio = 1 / 5
-        self.dirt_ratio = 1 / 5
+        self.obstacle_ratio = 1 / 6
+        self.dirt_ratio = 1 / 6
         self.dirts = []
         self.obstacles = []
 
     def update_view(self):
-        print(" ", "----" * self.size[0])
-        for i in range(self.size[1]):
-            for j in range(self.size[0]):
+        print(" ", "----" * self.size[1])
+        for i in range(self.size[0]):
+            for j in range(self.size[1]):
                 if (i, j) == (self.agent_current_position[0], self.agent_current_position[1]):
                     fill = "A"
                 elif (i, j) in self.dirts:
-                    fill = "D"
+                    fill = "d"
                 elif (i, j) in self.obstacles:
-                    fill = "D"
-                elif i == self.goal_position[0] and j == self.goal_position[1]:
-                    fill = "G"
+                    fill = "O"
                 else:
                     fill = " "
                 print(" |", fill, end="")
 
             print(" |")
-            print("", "----" * self.size[0])
+            print("", "----" * self.size[1])
 
     def goal_reached(self):
-        return self.agent_current_position == self.goal_position
+        return self.agent_current_position == self.set_goal()
 
     def generate_dirt(self):
         dirt_positions = []
@@ -48,8 +46,8 @@ class Environnement:
         for i in range(self.size[0]):
             for j in range(self.size[1]):
                 if (i, j) != self.initial_pos:
-                    if (i, j) not in self.generate_dirt():
-                        if random() < self.obtacle_ratio:
+                    if random() < self.obstacle_ratio:
+                        if (i, j) not in self.generate_dirt():
                             obstacles_positions.append((i, j))
         return obstacles_positions
 
@@ -57,4 +55,7 @@ class Environnement:
         return not self.dirts
 
     def set_goal(self):
-        pass
+        if not self.dirts:
+            raise ValueError("No available goal positions. Environment is clean.")
+        return choice(self.dirts)
+

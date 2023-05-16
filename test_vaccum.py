@@ -1,11 +1,11 @@
-from Environnement import *
-from Agent import *
-from Asperateur import *
+from Environnement import Environnement
+
+from Asperateur import Asperateur
 
 import time
 import os
 
-e1 = Environnement((10, 10), (0, 1), (5, 8))
+e1 = Environnement((10, 10), (5, 8))
 e1.dirts = e1.generate_dirt()  # list of tuples
 e1.obstacles = e1.generate_obstacles()  # list of tuples
 vaccum = Asperateur(e1)
@@ -23,3 +23,5 @@ while not e1.env_is_clean():
     # agent movement
 
     vaccum.update_memory_with_action()
+
+print("dirt collected = ", vaccum.dirt_collected)

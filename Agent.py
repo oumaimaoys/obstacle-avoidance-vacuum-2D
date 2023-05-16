@@ -15,14 +15,14 @@ class Agent:
 
         if (self.current_position[0] - 1) >= 0:
             possible_directions["up"] = ((self.current_position[0] - 1), self.current_position[1])
-        if (self.current_position[0] + 1) < self.environnement.size[1]:
+        if (self.current_position[0] + 1) < self.environnement.size[0]:
             possible_directions["down"] = ((self.current_position[0] + 1), self.current_position[1])
         if (self.current_position[1] - 1) >= 0:
             possible_directions["left"] = (self.current_position[0], (self.current_position[1] - 1))
-        if (self.current_position[1] + 1) < self.environnement.size[0]:
+        if (self.current_position[1] + 1) < self.environnement.size[1]:
             possible_directions["right"] = (self.current_position[0], (self.current_position[1] + 1))
 
-        # remove previous positions from possible_directions
+        # remove previous position from possible_directions
         if self.memory:
             possible_directions = {key: value for key, value in possible_directions.items() if
                                    value not in self.memory}
@@ -31,8 +31,8 @@ class Agent:
 
     def choose_best_action(self):
         # check if the goal is in a possible direction
-        if self.environnement.goal_position in self.possible_directions().values():
-            return next((k for k, v in self.possible_directions().items() if v == self.environnement.goal_position),
+        if self.environnement.set_goal() in self.possible_directions().values():
+            return next((k for k, v in self.possible_directions().items() if v == self.environnement.set_goal()),
                         None)
 
         # choix de distance minimal
@@ -41,8 +41,8 @@ class Agent:
             best_action = None
 
             for direction, pos in self.possible_directions().items():
-                distance = abs(self.environnement.goal_position[0] - pos[0]) + abs(
-                    self.environnement.goal_position[1] - pos[1])
+                distance = abs(self.environnement.set_goal()[0] - pos[0]) + abs(
+                    self.environnement.set_goal()[1] - pos[1])
 
                 if distance < min_distance:
                     min_distance = distance
@@ -60,30 +60,18 @@ class Agent:
 
     def action(self, direction):
         if direction == "up":
-            if self.current_position[0] > 0:
-                self.current_position = (self.current_position[0] - 1, self.current_position[1])
-            else:
-                raise ValueError("Invalid action: agent cannot move up")
+            self.current_position = (self.current_position[0] - 1, self.current_position[1])
         elif direction == "down":
-            if self.current_position[0] < self.environnement.size[1] - 1:
-                self.current_position = (self.current_position[0] + 1, self.current_position[1])
-            else:
-                raise ValueError("Invalid action: agent cannot move down")
+            self.current_position = (self.current_position[0] + 1, self.current_position[1])
         elif direction == "left":
-            if self.current_position[1] > 0:
-                self.current_position = (self.current_position[0], self.current_position[1] - 1)
-            else:
-                raise ValueError("Invalid action: agent cannot move left")
+            self.current_position = (self.current_position[0], self.current_position[1] - 1)
         elif direction == "right":
-            if self.current_position[1] < self.environnement.size[0] - 1:
-                self.current_position = (self.current_position[0], self.current_position[1] + 1)
-            else:
-                raise ValueError("Invalid action: agent cannot move right")
+            self.current_position = (self.current_position[0], self.current_position[1] + 1)
         else:
             raise ValueError("Invalid direction")
 
     def send_current_position(self):
         self.environnement.agent_current_position = self.current_position
 
-
-
+    def prevent_looping(self):
+        pass
