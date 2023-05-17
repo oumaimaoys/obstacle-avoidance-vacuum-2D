@@ -2,9 +2,9 @@ import math
 
 
 class Agent:
-    def __init__(self, environnement):  # position est tuple (x, y)
-        self.environnement = environnement
-        self.current_position = environnement.agent_current_position
+    def __init__(self, environment):  # position est tuple (x, y)
+        self.environment = environment
+        self.current_position = environment.agent_current_position
         self.previous_position = {}
         self.max_memory_size = 4
         self.memory = [self.current_position]  # stores previous positions
@@ -19,11 +19,11 @@ class Agent:
 
         if (self.current_position[0] - 1) >= 0:
             possible_directions["up"] = ((self.current_position[0] - 1), self.current_position[1])
-        if (self.current_position[0] + 1) < self.environnement.size[0]:
+        if (self.current_position[0] + 1) < self.environment.size[0]:
             possible_directions["down"] = ((self.current_position[0] + 1), self.current_position[1])
         if (self.current_position[1] - 1) >= 0:
             possible_directions["left"] = (self.current_position[0], (self.current_position[1] - 1))
-        if (self.current_position[1] + 1) < self.environnement.size[1]:
+        if (self.current_position[1] + 1) < self.environment.size[1]:
             possible_directions["right"] = (self.current_position[0], (self.current_position[1] + 1))
 
         # remove previous position from possible_directions
@@ -35,8 +35,8 @@ class Agent:
 
     def choose_best_action(self):
         # check if the goal is in a possible direction
-        if self.environnement.set_goal() in self.possible_directions().values():
-            return next((k for k, v in self.possible_directions().items() if v == self.environnement.set_goal()),
+        if self.environment.set_goal() in self.possible_directions().values():
+            return next((k for k, v in self.possible_directions().items() if v == self.environment.set_goal()),
                         None)
 
         # choix de distance minimal
@@ -45,8 +45,8 @@ class Agent:
             best_action = None
 
             for direction, pos in self.possible_directions().items():
-                distance = abs(self.environnement.set_goal()[0] - pos[0]) + abs(
-                    self.environnement.set_goal()[1] - pos[1])
+                distance = abs(self.environment.set_goal()[0] - pos[0]) + abs(
+                    self.environment.set_goal()[1] - pos[1])
 
                 if distance < min_distance:
                     min_distance = distance
@@ -79,5 +79,5 @@ class Agent:
             raise ValueError("Invalid direction")
 
     def send_current_position(self):
-        self.environnement.agent_current_position = self.current_position
+        self.environment.agent_current_position = self.current_position
 
