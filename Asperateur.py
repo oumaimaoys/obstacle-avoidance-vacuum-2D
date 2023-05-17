@@ -18,10 +18,7 @@ class Asperateur(Agent):
 
         possible_directions = {key: value for key, value in possible_directions.items() if value not in obstacles}
 
-        if not possible_directions:
-            raise ValueError("No possible directions, cannot move")
-        else:
-            return possible_directions
+        return possible_directions
 
     def choose_best_action(self):
         # check if the goal is in a possible direction
@@ -33,7 +30,11 @@ class Asperateur(Agent):
         possible_directions = self.avoid()
 
         if not possible_directions:
-            raise ValueError("no possible paths")
+            # If no possible directions, allow retracing back
+            possible_directions.update(self.previous_position)
+
+            if not possible_directions:
+                raise ValueError("No possible directions")
 
         # Choose the action with the minimum distance to the closest dirt
         min_distance = math.inf

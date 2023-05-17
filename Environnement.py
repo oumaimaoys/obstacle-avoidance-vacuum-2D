@@ -1,4 +1,4 @@
-
+import math
 from random import *
 
 
@@ -47,8 +47,10 @@ class Environnement:
             for j in range(self.size[1]):
                 if (i, j) != self.initial_pos:
                     if random() < self.obstacle_ratio:
-                        if (i, j) not in self.generate_dirt():
-                            obstacles_positions.append((i, j))
+                        position = (i, j)
+                        if position not in self.dirts:  # Check if the position is not already a dirt position
+                            obstacles_positions.append(position)
+
         return obstacles_positions
 
     def env_is_clean(self):
@@ -57,5 +59,15 @@ class Environnement:
     def set_goal(self):
         if not self.dirts:
             raise ValueError("No available goal positions. Environment is clean.")
-        return choice(self.dirts)
 
+        current_position = self.agent_current_position
+        min_distance = math.inf
+        closest_dirt = None
+
+        for dirt_pos in self.dirts:
+            distance = abs(dirt_pos[0] - current_position[0]) + abs(dirt_pos[1] - current_position[1])
+
+            if distance < min_distance:
+                min_distance = distance
+                closest_dirt = dirt_pos
+        return closest_dirt
