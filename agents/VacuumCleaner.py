@@ -1,4 +1,4 @@
-from Agent import Agent
+from agents.Agent import Agent
 import math
 
 
